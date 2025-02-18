@@ -42,31 +42,29 @@ delete_non_640x480_images(folder)
 folder = "../coco2017/val2017"  # Change this to your image folder path
 delete_non_640x480_images(folder)
 
-'''low_res_train_path = path + "/coco2017/train2017"
-high_res_train_path = path + "/coco2017/train2017"
+def rename_images(folder_path, prefix="image"):
+    image_extensions = (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff")
+    images = [f for f in os.listdir(folder_path) if f.lower().endswith(image_extensions)]
 
-low_res_test_path = path + "/coco2017/test2017"
-high_res_test_path = path + "/coco2017/test2017"
+    images.sort()
 
-WIDTH = 640
-HEIGHT = 480
+    for index, filename in enumerate(images, start=1):
+        ext = os.path.splitext(filename)[1]  # Get file extension
+        new_name = f"{prefix}_{index}{ext}"
+        old_path = os.path.join(folder_path, filename)
+        new_path = os.path.join(folder_path, new_name)
+        
+        os.rename(old_path, new_path)
+        print(f"Renamed: {filename} -> {new_name}")
+    
+    print("Renaming completed!")
 
-#train_low_images = load_res_images(low_res_train_path, WIDTH, HEIGHT, 1500)
+# Renaming images back into ascending order without skips (important for indexing reasons)
+folder_path = "../coco2017/train2017"
+rename_images(folder_path)
 
-train_high_images = load_res_images(high_res_train_path, WIDTH, HEIGHT, 1500)
+folder_path = "../coco2017/val2017"
+rename_images(folder_path)
 
-#val_low_images = load_res_images(low_res_test_path, WIDTH, HEIGHT, 150)
-
-test_high_images = load_res_images(high_res_test_path, WIDTH, HEIGHT, 150)'''
-
-'''fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
-
-axes[0].imshow(train_low_images[10])
-axes[0].set_title("Low-Resolution Image")
-axes[0].axis("off")
-
-axes[1].imshow(train_high_images[10])
-axes[1].set_title("High-Resolution Image")
-axes[1].axis("off")
-
-plt.show()'''
+folder_path = "../coco2017/test2017"
+rename_images(folder_path)

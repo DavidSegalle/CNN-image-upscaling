@@ -25,19 +25,19 @@ def up_block(x, skip, filters, kernel_size, dropout=False):
     x = layers.concatenate([x, skip])
     return x
 
-def build_model(size):
-    inputs = layers.Input(shape=[size, size, 3])
+def build_model():
+    inputs = layers.Input(shape=[240, 320, 3])
 
     # Downsampling
     d1 = down_block(inputs, 128, (3, 3), apply_batch_normalization=False)
     d2 = down_block(d1, 128, (3, 3), apply_batch_normalization=False)
     d3 = down_block(d2, 256, (3, 3), apply_batch_normalization=True)
     d4 = down_block(d3, 512, (3, 3), apply_batch_normalization=True)
-    d5 = down_block(d4, 512, (3, 3), apply_batch_normalization=True)
+    #d5 = down_block(d4, 512, (3, 3), apply_batch_normalization=True)
 
     # Upsampling
-    u1 = up_block(d5, d4, 512, (3, 3), dropout=False)
-    u2 = up_block(u1, d3, 256, (3, 3), dropout=False)
+    #u1 = up_block(d5, d4, 512, (3, 3), dropout=False)
+    u2 = up_block(d4, d3, 256, (3, 3), dropout=False)
     u3 = up_block(u2, d2, 128, (3, 3), dropout=False)
     u4 = up_block(u3, d1, 128, (3, 3), dropout=False)
 
@@ -46,9 +46,13 @@ def build_model(size):
     u5 = layers.LeakyReLU()(u5)
     u5 = layers.concatenate([u5, inputs])
 
+    u6 = layers.Conv2DTranspose(3, (3, 3), strides=(2, 2), padding="same", activation='sigmoid')(u5)
+    u6 = layers.LeakyReLU()(u6)
+    
+
     # Output layer
-    outputs = layers.Conv2D(3, (2, 2), padding='same', strides=1)(u5)
-    return Model(inputs=inputs, outputs=outputs)
+    #outputs = layers.Conv2D(3, (2, 2), padding='same', strides=1)(u6)
+    return Model(inputs=inputs, outputs=u6)
 
 
 def load_images(path, size):
@@ -86,7 +90,7 @@ def load_res_images(path, width, height, count = float("inf")):
         img = img.astype("float32") / 255.
         
         # Create low res image 
-        low_img = cv2.resize(img, (width, height))
+        low_img = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
 
         img = img_to_array(img)
         low_img = img_to_array(low_img)
