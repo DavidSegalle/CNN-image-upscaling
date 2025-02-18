@@ -68,3 +68,33 @@ def load_images(path, size):
 
     images = np.array(images)
     return images
+
+def load_res_images(path, width, height, count = float("inf")):
+    files = os.listdir(path)
+
+    high_res_images = []
+    low_res_images = []
+
+    for file in tqdm.tqdm(files):
+        if len(high_res_images) >= count:
+            break
+        img_path = os.path.join(path, file)
+        img = cv2.imread(img_path)
+        h, w, channels = img.shape
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        img = img.astype("float32") / 255.
+        
+        # Create low res image 
+        low_img = cv2.resize(img, (width, height))
+
+        img = img_to_array(img)
+        low_img = img_to_array(low_img)
+
+        low_res_images.append(low_img)
+        high_res_images.append(img)
+        #print(len(images))
+
+    high_res_images = np.array(high_res_images)
+    low_res_images = np.array(low_res_images)
+    return low_res_images, high_res_images

@@ -8,30 +8,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.api.models import Model
 
-from create_model import build_model, load_images
+from create_model import build_model, load_res_images
 
 # Download latest version
-path = kagglehub.dataset_download("adityachandrasekhar/image-super-resolution")
+#path = kagglehub.dataset_download("adityachandrasekhar/image-super-resolution")
 
-print("Path to dataset files:", path)
+#print("Path to dataset files:", path)
+sep = 'src'
+stripped = __file__.split(sep, 1)[0]
+print(stripped)
+path = stripped + "/coco2017"
 
-low_res_train_path = path + "/dataset/train/low_res"
-high_res_train_path = path + "/dataset/train/high_res"
 
-low_res_val_path = path + "/dataset/val/low_res"
-high_res_val_path = path + "/dataset/val/high_res"
+high_res_train_path = path + "/train2017"
 
-SIZE = 256
+high_res_test_path = path + "/test2017"
 
-train_low_images = load_images(low_res_train_path, size=SIZE)
+print("loading images")
+train_low_images, train_high_images = load_res_images(high_res_train_path, 320, 240, 1200)
 
-train_high_images = load_images(high_res_train_path, size = SIZE)
+test_low_images, test_high_images = load_res_images(high_res_test_path, 640, 480, 350)
 
-val_low_images = load_images(low_res_val_path, size=SIZE)
 
-val_high_images = load_images(high_res_val_path, size=SIZE)
-
-'''fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
 
 axes[0].imshow(train_low_images[10])
 axes[0].set_title("Low-Resolution Image")
@@ -41,9 +40,9 @@ axes[1].imshow(train_high_images[10])
 axes[1].set_title("High-Resolution Image")
 axes[1].axis("off")
 
-plt.show()'''
+plt.show()
 
-model = build_model(size=SIZE)
+'''model = build_model(size=SIZE)
 
 model.summary()
 
@@ -64,7 +63,7 @@ history = model.fit(
     train_high_images,
     epochs = 100,
     batch_size = 16,
-    validation_data=(val_low_images, val_high_images),
+    validation_data=(test_low_images, test_high_images),
     verbose = 1,
     callbacks=[cp_callback]
-)
+)'''
