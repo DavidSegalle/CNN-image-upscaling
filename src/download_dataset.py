@@ -90,7 +90,7 @@ def downscale_images(folder_path, save_path):
 
     for index, filename in enumerate(images, start=1):
         img = cv2.imread(folder_path + "/" + filename)
-        resized_image = cv2.resize(img, (320, 240), interpolation=cv2.INTER_NEAREST)
+        resized_image = cv2.resize(img, (320, 240))
         cv2.imwrite(save_path + "/" + filename, resized_image)
 
 print("Creating downscaled test images")

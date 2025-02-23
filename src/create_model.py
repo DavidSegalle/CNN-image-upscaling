@@ -29,24 +29,23 @@ def build_model():
     inputs = layers.Input(shape=[240, 320, 3])
 
     # Downsampling
-    d1 = down_block(inputs, 128, (3, 3), apply_batch_normalization=False)
-    d2 = down_block(d1, 128, (3, 3), apply_batch_normalization=False)
-    d3 = down_block(d2, 256, (3, 3), apply_batch_normalization=True)
-    d4 = down_block(d3, 512, (3, 3), apply_batch_normalization=True)
+    d1 = down_block(inputs, 128, (6, 6), apply_batch_normalization=False)
+    d2 = down_block(d1, 128, (6, 6), apply_batch_normalization=False)
+    d3 = down_block(d2, 256, (6, 6), apply_batch_normalization=True)
+    d4 = down_block(d3, 512, (6, 6), apply_batch_normalization=True)
     #d5 = down_block(d4, 512, (3, 3), apply_batch_normalization=True)
 
     # Upsampling
     #u1 = up_block(d5, d4, 512, (3, 3), dropout=False)
-    u2 = up_block(d4, d3, 256, (3, 3), dropout=False)
-    u3 = up_block(u2, d2, 128, (3, 3), dropout=False)
-    u4 = up_block(u3, d1, 128, (3, 3), dropout=False)
+    u2 = up_block(d4, d3, 256, (6, 6), dropout=False)
+    u3 = up_block(u2, d2, 128, (6, 6), dropout=False)
+    u4 = up_block(u3, d1, 128, (6, 6), dropout=False)
 
-    # Final upsampling
-    u5 = layers.Conv2DTranspose(3, (3, 3), padding='same', strides=2)(u4)
+    u5 = layers.Conv2DTranspose(3, (6, 6), padding='same', strides=2)(u4)
     u5 = layers.LeakyReLU()(u5)
     u5 = layers.concatenate([u5, inputs])
 
-    u6 = layers.Conv2DTranspose(3, (3, 3), strides=(2, 2), padding="same", activation='sigmoid')(u5)
+    u6 = layers.Conv2DTranspose(3, (6, 6), strides=(2, 2), padding="same", activation='sigmoid')(u5)
     u6 = layers.LeakyReLU()(u6)
     
 
@@ -55,7 +54,7 @@ def build_model():
     return Model(inputs=inputs, outputs=u6)
 
 
-def load_images(path, size):
+def load_images(path):
     
     files = os.listdir(path)
 
@@ -65,7 +64,7 @@ def load_images(path, size):
         img_path = os.path.join(path, file)
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (size, size))
+        #img = cv2.resize(img, (size, size))
         img = img.astype("float32") / 255.
         img = img_to_array(img)
         images.append(img)

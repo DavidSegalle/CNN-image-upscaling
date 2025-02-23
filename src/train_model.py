@@ -6,6 +6,7 @@ from keras.api.utils import Sequence
 from keras.api import models, layers, optimizers, callbacks
 from keras.api.utils import image_dataset_from_directory
 from keras.api.layers import Rescaling
+from keras.api.callbacks import Callback
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.api.models import Model

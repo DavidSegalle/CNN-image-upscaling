@@ -9,17 +9,18 @@ import matplotlib.pyplot as plt
 from keras.api.models import Model
 from create_model import build_model, load_images
 
-SIZE = 256
 
-model = build_model(size=SIZE)
+model = build_model()
 
-model.load_weights("../models/256Train.weights.h5")
+plot_model(model, show_shapes=True, show_layer_names=True, to_file="model_plot.png")
+
+model.load_weights("../models/coco.weights.h5")
 
 def predict_images(test_low, test_high, count=5, size=224):
     for _ in range(count):
         random_idx = np.random.randint(len(test_low))
-        predicted = model.predict(test_low[random_idx].reshape(1, size, size, 3), verbose=0)
-        predicted = np.clip(predicted, 0.0, 1.0).reshape(size, size, 3)
+        predicted = model.predict(np.expand_dims(test_low[random_idx], axis=0), verbose=0)[0]
+        predicted = np.clip(predicted, 0.0, 1.0)
         
         fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 5))
         
@@ -37,17 +38,17 @@ def predict_images(test_low, test_high, count=5, size=224):
         
         plt.show()
 
-path = kagglehub.dataset_download("adityachandrasekhar/image-super-resolution")
 
-print("Path to dataset files:", path)
 
-low_res_val_path = path + "/dataset/val/low_res"
-high_res_val_path = path + "/dataset/val/high_res"
+high_res_val_path = "../coco2017/val2017"
 
-SIZE = 256
+low_res_val_path = "../low_coco/val2017"
 
-val_low_images = load_images(low_res_val_path, size=SIZE)
+print("\n\nloading images\n\n")
+high_val_images = load_images(high_res_val_path)
 
-val_high_images = load_images(high_res_val_path, size=SIZE)
+low_val_images = load_images(low_res_val_path)
+print(low_val_images[0].shape)
+#print(model.predict(np.expand_dims(low_val_images[0], axis=0)))
 
-predict_images(val_low_images, val_high_images, count=5, size=SIZE)
+predict_images(low_val_images, high_val_images, count=5)
