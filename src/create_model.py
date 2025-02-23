@@ -29,8 +29,8 @@ def build_model():
     inputs = layers.Input(shape=[240, 320, 3])
 
     # Downsampling
-    d1 = down_block(inputs, 128, (6, 6), apply_batch_normalization=False)
-    d2 = down_block(d1, 128, (6, 6), apply_batch_normalization=False)
+    d1 = down_block(inputs, 128, (6, 6), apply_batch_normalization=True)
+    d2 = down_block(d1, 128, (6, 6), apply_batch_normalization=True)
     d3 = down_block(d2, 256, (6, 6), apply_batch_normalization=True)
     d4 = down_block(d3, 512, (6, 6), apply_batch_normalization=True)
     #d5 = down_block(d4, 512, (3, 3), apply_batch_normalization=True)

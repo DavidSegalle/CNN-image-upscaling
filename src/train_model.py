@@ -11,6 +11,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.api.models import Model
 import tensorflow as tf
+import pandas as pd
+
+import datetime
 
 from create_model import build_model, load_res_images
 
@@ -102,10 +105,39 @@ cp_callback = callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                  save_weights_only=True,
                                                  verbose=1)
 
+now = datetime.datetime.now()
+print(now.time())
+
 history = model.fit(
     train_generator,
-    epochs = 10,
+    epochs = 15,
     validation_data=test_generator,
     verbose = 1,
     callbacks=[cp_callback]
 )
+
+now = datetime.datetime.now()
+print(now.time())
+
+history_df = pd.DataFrame(history.history)
+history_df.head()
+
+
+plt.figure()
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Loss Curve")
+plt.legend(["train", "valid"])
+plt.show()
+
+plt.figure()
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Accuracy Curve")
+plt.legend(["train", "valid"])
+plt.show()
+
