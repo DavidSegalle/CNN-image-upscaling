@@ -1,4 +1,4 @@
-# PixelArtGenerator
+# U-Net Image Upscaling
 
 The goal of this project is to upscale images from 320x240 to 640x480 while also bringing image quality up to standart to the new resolution.
 
