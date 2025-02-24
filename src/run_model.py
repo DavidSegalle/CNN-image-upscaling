@@ -12,7 +12,7 @@ from create_model import build_model, load_images
 
 model = build_model()
 
-plot_model(model, show_shapes=True, show_layer_names=True, to_file="model_plot.png")
+#plot_model(model, show_shapes=True, show_layer_names=True, to_file="model_plot.png")
 
 model.load_weights("../models/coco.weights.h5")
 

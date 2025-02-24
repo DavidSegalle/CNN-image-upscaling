@@ -110,7 +110,7 @@ print(now.time())
 
 history = model.fit(
     train_generator,
-    epochs = 15,
+    epochs = 12,
     validation_data=test_generator,
     verbose = 1,
     callbacks=[cp_callback]
